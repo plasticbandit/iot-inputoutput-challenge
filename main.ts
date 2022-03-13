@@ -1,20 +1,27 @@
 enum RadioMessage {
     message1 = 49434,
-    Hello = 49337
+    Hello = 49337,
+    Crying = 58844
 }
-function isBabyCrying () {
-	
-}
-input.onSound(DetectedSound.Loud, function () {
+radio.onReceivedMessage(RadioMessage.Crying, function () {
     babyCrying = 1
+    if (babyCrying) {
+        music.playMelody("E B C5 A B G A F ", 500)
+        basic.showIcon(IconNames.Angry)
+    }
 })
 let babyCrying = 0
+radio.setGroup(1)
 input.setSoundThreshold(SoundThreshold.Loud, 125)
 babyCrying = 0
-radio.sendString("Start")
 soundExpression.hello.playUntilDone()
 basic.showIcon(IconNames.Happy)
-if (babyCrying) {
-    music.playMelody("E B C5 A B G A F ", 500)
-    basic.showIcon(IconNames.Angry)
+if (!(babyCrying)) {
+    if (input.buttonIsPressed(Button.A)) {
+        music.stopMelody(MelodyStopOptions.All)
+        babyCrying = 0
+        if (input.soundLevel() > 125) {
+            radio.sendMessage(RadioMessage.Crying)
+        }
+    }
 }
