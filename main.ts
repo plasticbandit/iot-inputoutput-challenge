@@ -7,28 +7,49 @@ radio.onReceivedNumber(function (receivedNumber) {
     isBabyCrying = receivedNumber
 })
 input.onButtonPressed(Button.A, function () {
-    radio.sendNumber(1)
+    isChildDevice = 0
+    radio.sendString("NewParent")
+    basic.showIcon(IconNames.Yes)
 })
 input.onSound(DetectedSound.Loud, function () {
-    radio.sendNumber(1)
+    if (isChildDevice == 1) {
+        radio.sendNumber(1)
+    }
+})
+radio.onReceivedString(function (receivedString) {
+    if (receivedString == "NewParent") {
+        isChildDevice = 1
+        basic.showIcon(IconNames.Heart)
+    }
 })
 input.onButtonPressed(Button.B, function () {
-    radio.sendNumber(0)
+    isBabyCrying = 0
 })
 input.onSound(DetectedSound.Quiet, function () {
-    radio.sendNumber(0)
+    if (isChildDevice == 1) {
+        radio.sendNumber(0)
+    }
 })
 let isBabyCrying = 0
+let isChildDevice = 0
 radio.setGroup(0)
-input.setSoundThreshold(SoundThreshold.Loud, 120)
-isBabyCrying = 0
+isChildDevice = 1
+let soundThreshold = 120
+input.setSoundThreshold(SoundThreshold.Loud, soundThreshold)
+if (input.soundLevel() >= soundThreshold) {
+    radio.sendNumber(1)
+} else {
+    radio.sendNumber(0)
+}
 basic.forever(function () {
-    if (isBabyCrying == 1) {
-        music.playMelody("C5 A B G A F G E ", 248)
-        basic.showIcon(IconNames.Angry)
-    }
-    if (isBabyCrying == 0) {
-        basic.showIcon(IconNames.Happy)
-        music.stopMelody(MelodyStopOptions.All)
+    if (isChildDevice == 0) {
+        if (isBabyCrying == 1) {
+            music.playMelody("C5 A B G A F G E ", 248)
+            basic.showIcon(IconNames.Sad)
+        }
+        if (isBabyCrying == 0) {
+            basic.showIcon(IconNames.Yes)
+            music.stopMelody(MelodyStopOptions.All)
+        }
     }
 })
