@@ -106,11 +106,11 @@ basic.forever(function () {
         if (isBabyCrying == 0) {
             if (babyTemp == "hot") {
                 basic.showString(babyTemp)
-                music.playMelody("C5 A B G A F G E ", 248)
+                music.playMelody("C5 C5 B B F F E E ", 248)
             }
             if (babyTemp == "cold") {
+                music.playMelody("C5 C5 B B F F E E ", 248)
                 basic.showString(babyTemp)
-                music.playMelody("C5 A B G A F G E ", 248)
             }
             if (babyTemp == "fineTemp") {
                 basic.showIcon(IconNames.Yes)
