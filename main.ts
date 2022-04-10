@@ -54,6 +54,15 @@ radio.onReceivedString(function (receivedString) {
         isChildDevice = 1
         basic.showIcon(IconNames.Heart)
     }
+    if (receivedString == "cold") {
+        babyTemp = receivedString
+    }
+    if (receivedString == "fineTemp") {
+        babyTemp = receivedString
+    }
+    if (receivedString == "hot") {
+        babyTemp = receivedString
+    }
 })
 input.onButtonPressed(Button.B, function () {
     isBabyCrying = 0
@@ -63,11 +72,15 @@ input.onSound(DetectedSound.Quiet, function () {
         radio.sendNumber(0)
     }
 })
+let temp = 0
+let babyTemp = ""
 let isBabyCrying = 0
 let isChildDevice = 0
 radio.setGroup(0)
 isChildDevice = 1
 let soundThreshold = 120
+let tempThreshold = 25
+let coldThreshold = 10
 input.setSoundThreshold(SoundThreshold.Loud, soundThreshold)
 if (input.soundLevel() >= soundThreshold) {
     radio.sendNumber(1)
@@ -75,14 +88,34 @@ if (input.soundLevel() >= soundThreshold) {
     radio.sendNumber(0)
 }
 basic.forever(function () {
+    temp = input.temperature()
+    if (temp >= tempThreshold) {
+        radio.sendString("hot")
+    } else {
+        if (temp <= coldThreshold) {
+            radio.sendString("cold")
+        } else {
+            radio.sendString("fineTemp")
+        }
+    }
     if (isChildDevice == 0) {
         if (isBabyCrying == 1) {
             music.playMelody("C5 A B G A F G E ", 248)
             basic.showIcon(IconNames.Sad)
         }
         if (isBabyCrying == 0) {
-            basic.showIcon(IconNames.Yes)
-            music.stopMelody(MelodyStopOptions.All)
+            if (babyTemp == "hot") {
+                basic.showString(babyTemp)
+                music.playMelody("C5 A B G A F G E ", 248)
+            }
+            if (babyTemp == "cold") {
+                basic.showString(babyTemp)
+                music.playMelody("C5 A B G A F G E ", 248)
+            }
+            if (babyTemp == "fineTemp") {
+                basic.showIcon(IconNames.Yes)
+                music.stopMelody(MelodyStopOptions.All)
+            }
         }
     }
 })
