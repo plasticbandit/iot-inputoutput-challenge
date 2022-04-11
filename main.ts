@@ -66,6 +66,7 @@ radio.onReceivedString(function (receivedString) {
 })
 input.onButtonPressed(Button.B, function () {
     isBabyCrying = 0
+    ignoreBaby = !(ignoreBaby)
 })
 input.onSound(DetectedSound.Quiet, function () {
     if (isChildDevice == 1) {
@@ -76,7 +77,9 @@ let temp = 0
 let babyTemp = ""
 let isBabyCrying = 0
 let isChildDevice = 0
+let ignoreBaby = false
 radio.setGroup(0)
+ignoreBaby = false
 isChildDevice = 1
 let soundThreshold = 120
 let tempThreshold = 25
@@ -98,7 +101,7 @@ basic.forever(function () {
             radio.sendString("fineTemp")
         }
     }
-    if (isChildDevice == 0) {
+    if (!(ignoreBaby) && isChildDevice == 0) {
         if (isBabyCrying == 1) {
             music.playMelody("C5 A B G A F G E ", 248)
             basic.showIcon(IconNames.Sad)
