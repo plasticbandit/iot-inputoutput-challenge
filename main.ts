@@ -67,6 +67,7 @@ radio.onReceivedString(function (receivedString) {
 input.onButtonPressed(Button.B, function () {
     isBabyCrying = 0
     ignoreBaby = !(ignoreBaby)
+    basic.showIcon(IconNames.Happy)
 })
 input.onSound(DetectedSound.Quiet, function () {
     if (isChildDevice == 1) {
