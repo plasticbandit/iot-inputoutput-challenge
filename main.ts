@@ -65,7 +65,6 @@ radio.onReceivedString(function (receivedString) {
     }
 })
 input.onButtonPressed(Button.B, function () {
-    isBabyCrying = 0
     ignoreBaby = !(ignoreBaby)
     basic.showIcon(IconNames.Happy)
 })
@@ -93,6 +92,15 @@ if (input.soundLevel() >= soundThreshold) {
 }
 basic.forever(function () {
     temp = input.temperature()
+    if (isChildDevice == 1) {
+        basic.showIcon(IconNames.Heart)
+    } else {
+        if (temp <= coldThreshold) {
+            radio.sendString("cold")
+        } else {
+            radio.sendString("fineTemp")
+        }
+    }
     if (temp >= tempThreshold) {
         radio.sendString("hot")
     } else {
@@ -120,6 +128,10 @@ basic.forever(function () {
                 basic.showIcon(IconNames.Yes)
                 music.stopMelody(MelodyStopOptions.All)
             }
+        }
+    } else {
+        if (isChildDevice == 0) {
+            basic.showString("Alerts OFF")
         }
     }
 })
